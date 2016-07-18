@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>贪吃蛇</title>
+	<link rel="stylesheet" href="../css/base.css"/>
+	<style type="text/css">
+		body{ background-color:#3F3F3F;}
+		#wrap{ position:relative; width:980px; height:500px; border:10px solid #172C49; margin:10px auto;}
+		#wrap div{ position:absolute; width:10px; height:10px; overflow:hidden;}
+		.snake{ background-color:#C7EDCC;}
+		.food{ background-color:#C7EDCC;}
+		.highFood{ background-color:red;}
+		#tool{ width:1000px; margin:0 auto; color:#FF8426; font:16px/140% "Microsoft YaHei";}
+		#tool p{margin: 10px 0;}
+		#btn{ padding:5px 15px;}
+		#score{ color:#FFCDFF; margin-right:30px;}
+	</style>
+</head>
+<body>
+	<div id="wrap"></div>
+	<div id="tool">
+		<input id="btn" type="button" value="开始"/>
+		<p>金币：<span id="score">0</span><span id="prompt">荣誉：未出茅庐</span></p>
+		<p>
+			说明：开始速度慢，后面会越来越快，吃够5000金币过关。<br />
+			绿色为普通食物，吃一个可获得100金币；<br />
+			红色为高级食物，吃一个可获得500金币，但是高级食物的存活时间有限，所以一旦出现高级食物，请抓紧时间。
+		</p>
+	</div>
+
+<script type="text/javascript">
+	// 全局变量
+	var wrap = document.getElementById('wrap'),			// 游戏边界
+		btn = document.getElementById('btn'),			// 开始按钮
+		prompt = document.getElementById('prompt'),		// 游戏提示
+		score = document.getElementById('score'),		// 游戏分数
+		X = 98,											// 总列数
+		Y = 50,											// 总行数
+		direction = 'right',							// 初始化方向
+		snake = [],										// 蛇
+		food = [],										// 食物
+		highFood = [],									// 高级食物
+		speed = 300,									// 初始化速度
+		timer = null;									// 全局定时器
+
+	// 初始化-蛇
+	for(var i = 4; i >= 0; i--){
+		var newDiv = document.createElement('div');
+		wrap.appendChild(newDiv);
+		snake[i] = {x: 40 - i, y: 20, div: newDiv, className: 'snake'};
+		setPos(snake[i]);
+	}
+
+	// 初始化-插入食物
+	appendFood();
+
+	// 设置元素位置：将蛇和食物等数组的项做为html插入页面
+	function setPos(obj){
+		obj.div.style.left = obj.x * 10 + 'px';
+		obj.div.style.top = obj.y * 10 + 'px';
+		if(obj.className !== 'underfined'){
+			obj.div.className = obj.className;
+		}
+	}
+
+	// 开始按钮
+	btn.onclick = function(){
+		if(this.value == '开始'){
+			startMove();
+			this.value = '暂停';
+		}else if(this.value == '暂停'){
+			clearInterval(timer);
+			this.value = '开始';
+		}
+	};
+
+	/**
+	 * 全局键盘事件
+	 */
+	document.onkeydown = function(e){
+		var event = e || window.event;
+		switch(event.keyCode){
+			case 37:
+				direction = direction == 'right' ? 'right' : 'left';
+				break;
+			case 38:
+				direction = direction == 'down' ? 'down' : 'up';
+				break;
+			case 39:
+				direction = direction == 'left' ? 'left' : 'right';
+				break;
+			case 40:
+				direction = direction == 'up' ? 'up' : 'down';
+				break;
+			case 32:
+				btn.onclick();
+				break;
+		}
+	};
+
+	/**
+	 * 使蛇动起来
+	 */
+	function startMove(){
+		timer = setInterval(function(){
+
+			// 蛇身子走动：后面的元素跟随前面的元素走动
+			for(var i = snake.length-1; i > 0; i--){
+				snake[i].x = snake[i-1].x;
+				snake[i].y = snake[i-1].y;
+			}
+
+			// 控制蛇头的方向
+			switch(direction){
+				case 'right':
+					snake[0].x++;
+					break;
+				case 'left':
+					snake[0].x--;
+					break;
+				case 'up':
+					snake[0].y--;
+					break;
+				case 'down':
+					snake[0].y++;
+					break;
+			}
+
+			// 撞墙
+			if(snake[0].x < 0 || snake[0].x >= X || snake[0].y < 0 || snake[0].y >= Y){
+				prompt.innerHTML = '命运：一头撞死！';
+				clearInterval(timer);
+				return;
+			}
+
+			// 撞到自己
+			for(var i = 1; i < snake.length; i++){
+				if(snake[0].x == snake[i].x && snake[0].y == snake[i].y){
+					prompt.innerHTML = '命运：首尾相连！';
+					clearInterval(timer);
+					return;
+				}
+			}
+
+			// 吃到普通食物 获得100积分
+			eat(food, 100);
+			// 吃到高级食物 获得500积分
+			eat(highFood, 500);
+
+			// 吃到食物
+			function eat(arr, num){
+				for(var i = 0; i < arr.length; i++){
+					if(snake[0].x == arr[i].x && snake[0].y == arr[i].y){
+						arr[i].className = 'snake';
+						snake.push(arr[i]);
+						arr.splice(i,1);
+						score.innerHTML = parseInt(score.innerHTML) + parseInt(num);
+						var scoreNum = parseInt(score.innerHTML);
+						if(scoreNum >= '500' && scoreNum < '1000'){
+							reTimer(250, '荣誉：初战告捷');
+						}else if(scoreNum >= '1000' && scoreNum < '2000'){
+							reTimer(200, '荣誉：小试牛刀');
+						}else if(scoreNum >= '2000' && scoreNum < '3000'){
+							reTimer(150, '荣誉：一战成名');
+						}else if(scoreNum >= '3000' && scoreNum < '4000'){
+							reTimer(100, '荣誉：百盛将军');
+						}else if(scoreNum >= '4000' && scoreNum < '5000'){
+							reTimer(50, '荣誉：长征万里只差一步');
+						}else if(scoreNum >= '5000'){
+							reTimer(30, '荣誉：百年难得一遇的天才！过关。');
+							clearInterval(timer);
+						}
+						if(food.length == 0){
+							appendFood();
+						}
+					}
+				}
+			}
+
+			for(var i = 0; i < snake.length; i++){
+				setPos(snake[i]);
+			}
+
+		}, speed);
+	}
+
+	// 根据分数设置速度，重开定时器
+	function reTimer(newSpeed, str){
+		speed = newSpeed;
+		clearInterval(timer);
+		startMove();
+		prompt.innerHTML = str;
+	}
+
+	/**
+	 * 插入食物
+	 */
+	function appendFood(){
+
+		// 创建普通食物
+		createFood(food, '5', 'food');
+
+		// 创建高级食物
+		if(Math.random() < 0.5){
+			createFood(highFood, '1', 'highFood', 10000);
+		}
+	}
+
+	/**
+	 * 创建食物
+	 * @param arr 数组 要插入的食物类型
+	 * @param num 整数 要插入的食物数量
+	 * @param className 字符串 给食物添加上特定class
+	 * @param timeoverRemove 整数 食物的过期时间
+	 */
+	function createFood(arr, num, className, timeoverRemove){
+		while(arr.length < num){
+			var x = parseInt(Math.random() * X),
+				y = parseInt(Math.random() * Y);
+
+			var found = true;
+
+			//  食物不能与蛇重叠
+			for(var i = 0; i < snake.length; i++){
+				if(x == snake[i].x && y == snake[i].y){
+					found = false;
+				}
+			}
+
+			// 不能与其他食物重叠
+			if(found){
+				for(var i = 0; i < food.length; i++){
+					if(x == food[i].x && y == food[i].y){
+						found = false;
+					}
+				}
+			}
+
+			// 创建食物
+			if(found){
+				var newDiv = document.createElement('div');
+				wrap.appendChild(newDiv);
+				arr.push({div: newDiv, x: x, y: y, className: className});
+				setPos(arr[arr.length-1]);
+				if(timeoverRemove){
+					setTimeout(function(){
+						arr.splice(arr[arr.length-1],1);
+						wrap.removeChild(newDiv);
+					}, timeoverRemove);
+				}
+			}
+		}
+	}
+
+</script>
+</body>
+</html>
