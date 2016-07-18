@@ -1,0 +1,26 @@
+/**
+ * @Abstract    自定义提示框 - jQuery插件
+ * @Datatime    13-7-28 下午1:19
+ * @Author      Jayuh [511977533@qq.com]
+ * @WebSite     http://jayuh.com
+ * @Version     0.1
+ */
+
+.custom_prompt{ background-color:#FFF9E7; border:1px solid #F2D58F; padding:2px 4px; border-radius:3px;}
+
+/* 箭头向上 */
+.custom_prompt i.arrow_up{position:absolute;top:-5px;left:10px;width: 0;height: 0;overflow: hidden;border-width: 0 5px 5px 5px;border-color: transparent transparent #f2d58f transparent;border-style: none dashed solid dashed;}
+.custom_prompt b.arrow_up{position:absolute;top:-4px;left:11px;width: 0;height: 0;overflow: hidden;border-width: 0 4px 4px 4px;border-color: transparent transparent #fff9e7 transparent;border-style: none dashed solid dashed;}
+
+/* 箭头向下 */
+.custom_prompt i.arrow_down{position:absolute;bottom:-5px;left:10px;width: 0;height: 0;overflow: hidden;border-width: 5px 5px 0 5px;border-color: #f2d58f transparent transparent transparent;border-style: solid dashed none dashed;}
+.custom_prompt b.arrow_down{position:absolute;bottom:-4px;left:11px;width: 0;height: 0;overflow: hidden;border-width: 4px 4px 0 4px;border-color: #fff9e7 transparent transparent transparent;border-style: solid dashed none dashed;}
+
+/* 箭头向左 */
+.custom_prompt i.arrow_left{position:absolute;top:10px;left:-5px;width: 0;height: 0;overflow: hidden;border-width: 5px 5px 5px 0;border-color: transparent #f2d58f transparent transparent;border-style: dashed solid dashed none;}
+.custom_prompt b.arrow_left{position:absolute;top:11px;left:-4px;width: 0;height: 0;overflow: hidden;border-width: 4px 4px 4px 0;border-color: transparent #fff9e7 transparent transparent;border-style: dashed solid dashed none;}
+
+/* 箭头向右 */
+.custom_prompt i.arrow_right{position:absolute;top:10px;right:-5px;width: 0;height: 0;overflow: hidden;border-width: 5px 0 5px 5px;border-color: transparent transparent transparent #f2d58f;border-style: dashed none dashed solid;}
+.custom_prompt b.arrow_right{position:absolute;top:11px;right:-4px;width: 0;height: 0;overflow: hidden;border-width: 4px 0 4px 4px;border-color: transparent transparent transparent #fff9e7;border-style: dashed none dashed solid;}
+
