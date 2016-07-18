@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>固定列表的Table布局</title>
+	<link rel="stylesheet" href="css/base.css"/>
+	<style type="text/css">
+		table{border: 0 none;border-collapse:collapse;}
+		.btn_wrap a{padding: 2px 5px;border-radius:3px;border:1px solid #5A82FF }
+		.ouside_table{margin: 10px auto;border-top:1px solid #000;border-left:1px solid #000;}
+		.ouside_table_header td{height: 30px;font-weight: bold;background-color:#F1F1F1;}
+		.ouside_table td{text-align: center;}
+		.ouside_table_first, .ouside_table_center, .ouside_table_last{border-bottom:1px solid #000;border-right:1px solid #000;}
+		.ouside_table_first{background-color:#F1F1F1;}
+		.ouside_table_last{background-color:#F1F1F1;}
+		.inside_wrap{overflow-x:hidden;position: relative;}
+		.inside_table td{border-right:1px solid #000;}
+		.inside_table .inside_table_last{border-right: 0 none;}
+
+		.btn_wrap{text-align:center;line-height: 28px;}
+		.prompt{text-align:center;}
+		.w200{width: 200px;}
+		.w100{width: 100px;}
+		.w120{width: 120px;}
+	</style>
+</head>
+<body>
+
+<table class="ouside_table">
+	<tr class="ouside_table_header">
+		<td class="ouside_table_first"><div class="w120">规则描述</div></td>
+		<td class="ouside_table_center">
+			<div class="inside_wrap">
+				<table class="inside_table">
+					<tr>
+						<td><div class="w100">标题1</div></td>
+						<td><div class="w200">标题2</div></td>
+						<td><div class="w100">标题3</div></td>
+						<td><div class="w100">标题4</div></td>
+						<td><div class="w100">标题5</div></td>
+						<td><div class="w100">标题6</div></td>
+						<td><div class="w100">标题7</div></td>
+						<td><div class="w100">标题8</div></td>
+						<td><div class="w100">标题9</div></td>
+						<td><div class="w100">标题10</div></td>
+						<td><div class="w100">标题11</div></td>
+						<td><div class="w100">标题12</div></td>
+						<td><div class="w100">标题13</div></td>
+						<td><div class="w100">标题14</div></td>
+						<td><div class="w100">标题15</div></td>
+						<td><div class="w100">标题16</div></td>
+						<td><div class="w100">标题17</div></td>
+						<td><div class="w100">标题18</div></td>
+						<td><div class="w100">标题19</div></td>
+						<td class="inside_table_last"><div class="w100">标题20</div></td>
+					</tr>
+				</table>
+			</div>
+		</td>
+		<td class="ouside_table_last"><div class="w120">操作</div></td>
+	</tr>
+	<tr>
+		<td class="ouside_table_first">产品1</td>
+		<td class="ouside_table_center">
+			<div class="inside_wrap">
+				<table class="inside_table">
+					<tr>
+						<td><div class="w100">内容1</div></td>
+						<td><div class="w200">内容2</div></td>
+						<td><div class="w100">内容3</div></td>
+						<td><div class="w100">内容4</div></td>
+						<td><div class="w100">内容5</div></td>
+						<td><div class="w100">内容6</div></td>
+						<td><div class="w100">内容7</div></td>
+						<td><div class="w100">内容8</div></td>
+						<td><div class="w100">内容9</div></td>
+						<td><div class="w100">内容10</div></td>
+						<td><div class="w100">内容11</div></td>
+						<td><div class="w100">内容12</div></td>
+						<td><div class="w100">内容13</div></td>
+						<td><div class="w100">内容14</div></td>
+						<td><div class="w100">内容15</div></td>
+						<td><div class="w100">内容16</div></td>
+						<td><div class="w100">内容17</div></td>
+						<td><div class="w100">内容18</div></td>
+						<td><div class="w100">内容19</div></td>
+						<td class="inside_table_last"><div class="w100">内容20</div></td>
+					</tr>
+				</table>
+			</div>
+		</td>
+		<td class="ouside_table_last">
+			<a href="javascript:void(0);">删除</a>
+			<a href="javascript:void(0);">编辑</a>
+		</td>
+	</tr>
+	<tr>
+		<td class="ouside_table_first">产品1</td>
+		<td class="ouside_table_center">
+			<div class="inside_wrap">
+				<table class="inside_table">
+					<tr>
+						<td><div class="w100">内容1</div></td>
+						<td><div class="w200">内容2</div></td>
+						<td><div class="w100">内容3</div></td>
+						<td><div class="w100">内容4</div></td>
+						<td><div class="w100">内容5，我内容过长，我很长，我非常长……</div></td>
+						<td><div class="w100">内容6</div></td>
+						<td><div class="w100">内容7</div></td>
+						<td><div class="w100">内容8</div></td>
+						<td><div class="w100">内容9</div></td>
+						<td><div class="w100">内容10</div></td>
+						<td><div class="w100">内容11</div></td>
+						<td><div class="w100">内容12</div></td>
+						<td><div class="w100">内容13</div></td>
+						<td><div class="w100">内容14</div></td>
+						<td><div class="w100">内容15</div></td>
+						<td><div class="w100">内容16</div></td>
+						<td><div class="w100">内容17</div></td>
+						<td><div class="w100">内容18</div></td>
+						<td><div class="w100">内容19</div></td>
+						<td class="inside_table_last"><div class="w100">内容20</div></td>
+					</tr>
+				</table>
+			</div>
+		</td>
+		<td class="ouside_table_last">
+			<a href="javascript:void(0);">删除</a>
+			<a href="javascript:void(0);">编辑</a>
+		</td>
+	</tr>
+	<tr>
+		<td class="ouside_table_first">产品1</td>
+		<td class="ouside_table_center">
+			<div class="inside_wrap">
+				<table class="inside_table">
+					<tr>
+						<td><div class="w100">内容1</div></td>
+						<td><div class="w200">内容2</div></td>
+						<td><div class="w100">内容3</div></td>
+						<td><div class="w100">内容4</div></td>
+						<td><div class="w100">内容5</div></td>
+						<td><div class="w100">内容6</div></td>
+						<td><div class="w100">内容7</div></td>
+						<td><div class="w100">内容8</div></td>
+						<td><div class="w100">内容9</div></td>
+						<td><div class="w100">内容10</div></td>
+						<td><div class="w100">内容11</div></td>
+						<td><div class="w100">内容12</div></td>
+						<td><div class="w100">内容13</div></td>
+						<td><div class="w100">内容14</div></td>
+						<td><div class="w100">内容15</div></td>
+						<td><div class="w100">内容16</div></td>
+						<td><div class="w100">内容17</div></td>
+						<td><div class="w100">内容18</div></td>
+						<td><div class="w100">内容19</div></td>
+						<td class="inside_table_last"><div class="w100">内容20，尼玛，我比你还长，比你还长，你还长，还长，长。。。</div></td>
+					</tr>
+				</table>
+			</div>
+		</td>
+		<td class="ouside_table_last">
+			<a href="javascript:void(0);">删除</a>
+			<a href="javascript:void(0);">编辑</a>
+		</td>
+	</tr>
+</table>
+
+<p class="btn_wrap">
+	<a href="javascript:void(0);" id="roll_left">持续向左滚动</a>
+	<a href="javascript:void(0);" id="roll_right">持续向右滚动</a>
+</p>
+<p class="btn_wrap">
+	<a href="javascript:void(0);" id="jump_left">向左滑动一格</a>
+	<a href="javascript:void(0);" id="jump_right">向右滑动一格</a>
+</p>
+<p class="prompt">注：键盘上的左/右按钮可以控制向左/向右滑动</p>
+
+<script type="text/javascript" src="js/jquery-1.7.2.js"></script>
+<script type="text/javascript">
+	var // 按钮
+		btnRollLeft = $('#roll_left'),
+		btnRollRight = $('#roll_right'),
+		btnJumpLeft = $('#jump_left'),
+		btnJumpRight = $('#jump_right'),
+		// 所有需要滑动的元素
+		$allDiv = $('.inside_wrap'),
+		// 第一个需要滑动的元素（方便取值）
+		$firstDiv = $allDiv.eq(0),
+		$td = $firstDiv.children('table').children('tbody').children('tr').children('td');
+		// ｛Array｝ 每格滑动的位置
+		aPosition = [];
+
+	for(var i = 0; i < $td.length; i++){
+		// 除了第一项，其余项都+1，因为边框的存在
+		aPosition[i] = i == 0 ? 0 : $td.eq(i).position().left + 1;
+	}
+
+	// 设置div宽度
+	function setWidth(){
+		var windowWidth = $(window).width(),
+			$parentDiv = $allDiv.parents('.ouside_table'),
+			$firstTd = $parentDiv.find('tr:first > td:first'),
+			$lastTd = $parentDiv.find('tr:first > td:last');
+		$allDiv.width(windowWidth *.95 - $firstTd.width() - $lastTd.width() - 4);
+	}
+	setWidth();
+	$(window).bind('resize',function(){
+		setWidth();
+	});
+
+	// 向右滑动按钮
+	btnJumpRight.bind('click',function(){
+
+		var current = $firstDiv.scrollLeft(),
+			limit =  $firstDiv.children().width() - $firstDiv.width(),
+			target = 0,
+			k = 0;
+
+		while(k < aPosition.length){
+			if(aPosition[k] > current){
+				target = aPosition[k];
+				break;
+			}
+			k++;
+		}
+
+		target = target > limit ? limit : target;
+
+		jump(current, target, 10, 'right');
+
+	});
+
+	// 向左滑动按钮
+	btnJumpLeft.bind('click',function(){
+
+		var current = $firstDiv.scrollLeft(),
+			target = 0,
+			k = aPosition.length;
+
+		while(k > 0){
+			if(aPosition[k] < current){
+				target = aPosition[k];
+				break;
+			}
+			k--;
+		}
+
+		jump(current, target, -10, 'left');
+
+	});
+
+	// 动画效果 滑动一格
+	function jump(current, target, speed, direction){
+		setTimeout(function(){
+			var selfFn = arguments.callee;
+			current += speed;
+			var compareStatement = direction == 'left' ? (current - target <= 0) : (current - target >= 0);
+			if(compareStatement){
+				clearTimeout(selfFn);
+				$allDiv.scrollLeft(target);
+				return false;
+			}
+			$allDiv.scrollLeft(current);
+			setTimeout(arguments.callee,30);
+		},0);
+	}
+
+	// 添加键盘事件
+	$(window).bind('keydown',function(event){
+		switch(event.keyCode){
+			case 37 :
+				btnJumpLeft.click();
+				break;
+			case 39 :
+				btnJumpRight.click();
+				break;
+		}
+	});
+
+	// BUG：Chrome和Safari下，被溢出隐藏的元素仍然可以被拖动，产生滚动条被拖动的效果
+	// 解决办法：使所有元素一起被拖动
+	var isWebkit = navigator.userAgent.indexOf("Safari") > -1;
+	if(isWebkit){
+		$allDiv.bind('mousemove',function(){
+			var $this = $(this);
+			$this.bind('scroll',function(){
+				$allDiv.scrollLeft($this.scrollLeft());
+			}).unbind('scroll', arguments.callee);
+		});
+	}
+
+</script>
+<script type="text/javascript">
+
+	/**
+	 * 持续滚动按钮
+	 */
+
+	// 滚动的方法
+	var roll = {
+		flag : false,
+		down : function(speed){
+			this.flag = false;
+			this.timer = setInterval(function(){
+				var currentPosition = $firstDiv.scrollLeft();
+				currentPosition += speed;
+				$allDiv.scrollLeft(currentPosition);
+			},30);
+		},
+		up : function(){
+			if(!this.flag) {
+				clearInterval(this.timer);
+			}
+		}
+	};
+
+	// 向左滚动按钮
+	btnRollLeft.bind({
+		mousedown : function(){
+			fixedCapture(this);
+			roll.down(-10);
+		},
+		mouseup : function(){
+			fixedCapture(this, 'disable');
+			roll.up();
+		},
+		mouseout : function(){
+			$(this).mouseup();
+		}
+	});
+
+	// 向右滚动按钮
+	btnRollRight.bind({
+		mousedown : function(){
+			fixedCapture(this);
+			roll.down(10);
+		},
+		mouseup : function(){
+			fixedCapture(this, 'disable');
+			roll.up();
+		},
+		mouseout : function(){
+			$(this).mouseup();
+		}
+	});
+
+	// 修复鼠标移动捕获事件
+	function fixedCapture(dv, mode) {
+		if(mode == 'disable') {
+			if(dv.releaseCapture){
+				dv.releaseCapture();
+			}else if(window.captureEvents){
+				window.captureEvents(Event.MOUSEMOVE|Event.MOUSEUP);
+			}
+		} else {
+			if(dv.setCapture){
+				dv.setCapture();
+			}else if(window.captureEvents){
+				window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);
+			}
+		}
+	}
+
+</script>
+</body>
+</html>
