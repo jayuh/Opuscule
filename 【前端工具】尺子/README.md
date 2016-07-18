@@ -21,4 +21,4 @@
 javascript:with(document)0[body.appendChild(createElement('script')).src='http://jayuh.com/demo/ruler/ruler.js']
 ```
 
-作者地址：[http://jayuh.com/demo/ruler/](http://jayuh.com/demo/ruler/)
+在线DEMO：[http://jayuh.com/demo/ruler/](http://jayuh.com/demo/ruler/)
