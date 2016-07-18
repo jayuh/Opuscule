@@ -8,24 +8,17 @@
 1. 划取刻度线可选择一段范围的长度；
 1. 键盘上的上下左右按键可微调尺子的位置。
 1. 尺子左边有四个小功能键：
-	a. 矩形工具：可在页面画一个矩形，获得矩形的宽和高；
-	a. 点对点距离：可在页面上画出一条直线，获得此直线的长度；
-	a. 最小化：将尺子最小化到左下角；
-	a. 关闭：消除尺子的div，且不会在出现，除非再次通过JS加载。
+	- 矩形工具：可在页面画一个矩形，获得矩形的宽和高；
+	- 点对点距离：可在页面上画出一条直线，获得此直线的长度；
+	- 最小化：将尺子最小化到左下角；
+	- 关闭：消除尺子的div，且不会在出现，除非再次通过JS加载。
 
 ## 调用方法
-只用加载一个JS文件即可：[](http://jayuh.com/demo/ruler/ruler.js)
+只用加载一个JS文件即可：[http://jayuh.com/demo/ruler/ruler.js](http://jayuh.com/demo/ruler/ruler.js)
 
 如果是查看他人页面，自己不方便直接修改源代码，可以通过控制台（F12）加载。IE6下等没有控制台的浏览器，可以通过地址栏加载：
+```
 javascript:with(document)0[body.appendChild(createElement('script')).src='http://jayuh.com/demo/ruler/ruler.js']
+```
 
-作者地址：[](http://jayuh.com/demo/ruler/)
-
-
-1. 列出所有元素：
-    - 无序列表元素 A
-        1. 元素 A 的有序子列表
-    - 前面加四个空格
-2. 列表里的多段换行：
-    前面必须加四个空格，
-    这样换行，整体的格式不会乱
+作者地址：[http://jayuh.com/demo/ruler/](http://jayuh.com/demo/ruler/)
