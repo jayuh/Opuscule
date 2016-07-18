@@ -1,0 +1,173 @@
+
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<title>利用border制作纯CSS三角形 - By Jayuh</title>
+<style type="text/css">
+*{margin:0;padding:0;}
+body{padding:20px 50px 0;font:14px/200% "Microsoft Yahei";}
+.clearfix:after{display:block;content:"";clear:both;visibility:hidden;font-size:0;height:0;}
+.clearfix{*zoom:1;}
+.header{border-bottom:1px solid #000;}
+.footer{line-height:50px;text-align:center;color:#666;}
+.footer a{padding:0 5px;color:#999;}
+h1{float:left;padding:20px 0;font-size:24px;font-weight:normal;}
+.css_tool{float:right;line-height:50px;font-size:30px;}
+.decoration{padding:10px 0;color:#666;}
+.set_up{float:left;}
+.set_up th{text-align:right;}
+.set_up td{padding:0 5px;color:#999;}
+.set_up td input[type=text]{width:140px;height:22px;line-height:22px;padding:0 5px;}
+.set_up td input[type=text] + span{color:#F00;}
+.set_up td select{width:152px;height:24px;line-height:22px;}
+.set_up td input, .set_up td select{color:#666;border-radius:3px;border:1px solid #CCC;font-family:Airly;}
+.set_up td input[type=button]{margin:5px 0;padding:10px 15px;background-color:#008B8B;border:0 none;color:#F0FFFF;cursor:pointer;}
+.set_up td span{font-weight:bold;color:#000;}
+.set_up td i{padding:0 3px;color:#333;}
+.demo{float:right;padding:30px 50px;border:5px dashed #008B8B;}
+pre{border-radius:8px;padding:10px 20px;background-color:#000;color:#FFD700;}
+</style>
+</head>
+<body>
+	<div class="header clearfix">
+		<div class="css_tool">前端小工具</div>
+		<h1>利用border制作纯CSS三角形</h1>
+	</div>
+
+	<p class="decoration">原理：利用相邻border之间的横切面制造的三角形</p>
+
+	<div class="clearfix">
+		<table class="set_up">
+			<tr>
+				<th>边框大小：</th>
+				<td><input id="size" type="text" value="10px" /> <span>&radic;</span></td>
+				<td>别忘记添加上单位，如<i>px</i>、<i>em</i>、<i>pt</i>等</td>
+			</tr>
+			<tr>
+				<th>颜色值：</th>
+				<td><input id="color" type="text" value="#F00" /> <span>&radic;</span></td>
+				<td>可填写<span>16进制颜色值</span>，别忘了带#号哦；也可以直接输入<span>英文颜色值</span>，如<i>red</i>、<i>blue</i>、<i>green</i>等</td>
+			</tr>
+			<tr>
+				<th>方向：</th>
+				<td>
+					<select id="arrow">
+						<option value="up">&uarr;</option>
+						<option value="right">&rarr;</option>
+						<option value="down">&darr;</option>
+						<option value="left">&larr;</option>
+					</select>
+				</td>
+				<td><span>上</span>(&uarr;)、<span>下</span>(&darr;)、<span>左</span>(&larr;)、<span>右</span>(&rarr;) 四个方向</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input id="submit" type="button" value="生成CSS代码" /></td>
+				<td></td>
+			</tr>
+		</table>
+
+		<div id="demo" class="demo">
+			<p>效果展示：<span class="triangle"></span></p>
+		</div>
+	</div>
+
+	<p>CSS 代码：</p>
+	<pre id="css_code"></pre>
+
+	<p>HTML 代码：</p>
+	<pre>&lt;span class="triangle"&gt;&lt;/span&gt;</pre>
+
+	<div class="footer">前端小工具，朋友们可自行转载，版权归<a href="http://jayuh.com" target="_blank" title="Jayuh Blog">Jayuh Blog</a>所有</div>
+
+<script type="text/javascript">
+window.onload = function() {
+	go();
+
+	var inputSize = document.getElementById("size");
+	var inputColor = document.getElementById("color");
+	var submit = document.getElementById("submit");
+	var inputSizeBool = true;
+	var inputColorBool = true;
+
+	//验证表单
+	inputSize.onblur = function() {
+		var re = /^[0-9.]+in|cm|mm|em|ex|pt|pc|px$/i;	//数字 + 单位
+		if(re.test(this.value)){
+			this.parentNode.lastChild.innerHTML = "&radic;";
+			inputSizeBool = true;
+		}else{
+			this.parentNode.lastChild.innerHTML = "&times;";
+			inputSizeBool = false;
+		}
+	}
+	inputColor.onblur = function() {
+		var re = /^#[a-f0-9]{3}$|^#[a-f0-9]{6}$|^\w{3,}$/i;	// #FFF 或 #FFFFFF 或 red
+		if(re.test(this.value)){
+			this.parentNode.lastChild.innerHTML = "&radic;";
+			inputColorBool = true;
+		}else{
+			this.parentNode.lastChild.innerHTML = "&times;";
+			inputColorBool = false;
+		}
+	}
+	//提交
+	submit.onclick = function() {
+		if(inputSizeBool == false || inputColorBool == false){
+			alert("你丫输错了！");
+			return
+		};
+		go();
+	}
+};
+
+function go() {
+	//获取基本元素及值
+	var sizeVal = document.getElementById("size").value;
+	var colorVal = document.getElementById("color").value;
+	var arrowVal = document.getElementById("arrow").value;
+	var cssCode = document.getElementById("css_code");
+	var demo = document.getElementById("demo").getElementsByTagName("span")[0];
+	//公共样式
+	var basicStyle1 = "display:inline-block;";
+	var basicStyle2 = "width:0;";
+	var basicStyle3 = "height:0;";
+	var basicStyle4 = "overflow:hidden;";
+	var basicStyle5 = "vertical-align:middle;";
+	var split = "<br />	";
+	var cssCodeBasicStyle = basicStyle1 + split + basicStyle2 + split + basicStyle3 + split + basicStyle4 + split + basicStyle5;
+	var demoBasicStyle = basicStyle1 + basicStyle2 + basicStyle3 + basicStyle4 + basicStyle5;
+	//动态样式
+	var borderWidth, borderColor, borderStyle;
+	switch(arrowVal)
+	{
+		case "up":
+			borderWidth = "border-width:" + "0 " + sizeVal + " " + sizeVal + " " + sizeVal + ";";
+			borderColor = "border-color:transparent transparent " + colorVal + " transparent;";
+			borderStyle = "border-style:none dashed solid dashed;";
+			break;
+		case "right":
+			borderWidth = "border-width:" + sizeVal + " " + "0 " + sizeVal + " " + sizeVal + ";";
+			borderColor = "border-color:transparent transparent transparent " + colorVal + ";";
+			borderStyle = "border-style:dashed none dashed solid;";
+			break;
+		case "down":
+			borderWidth = "border-width:" + sizeVal + " " + sizeVal + " " + "0 " + sizeVal + ";";
+			borderColor = "border-color:" + colorVal + " transparent transparent transparent;";
+			borderStyle = "border-style:solid dashed none dashed;";
+			break;
+		case "left":
+			borderWidth = "border-width:" + sizeVal + " " + sizeVal + " " + sizeVal + " 0" + ";";
+			borderColor = "border-color:transparent " + colorVal + " transparent transparent;";
+			borderStyle = "border-style:dashed solid dashed none;";
+			break;
+	}
+	//输出css代码
+	cssCode.innerHTML = ".triangle{" + split + cssCodeBasicStyle + split + borderWidth + split + borderColor + split + borderStyle + "<br />}";
+	//给demo赋值
+	demo.style.cssText = demoBasicStyle + borderWidth + borderColor + borderStyle;
+};
+</script>
+</body>
+</html>
