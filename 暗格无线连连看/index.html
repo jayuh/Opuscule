@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>暗格无线连连看</title>
+	<link rel="stylesheet" href="../css/base.css"/>
+	<style type="text/css">
+		body{ background-color:#E1E1E1;}
+		#pic{ margin-right:180px; *float: left; *margin-right: 0;}
+		.item{ float:left; margin:1px; background-size:contain; background-repeat:no-repeat; cursor:default;}
+		.shade{ background-color:#CCC; width:100%; height:100%; color: #666; text-align: center; font: 30px/60px Arial; }
+		.shade_show{background-color:transparent;font-size:0;}
+		.select{ position:relative; box-shadow: 0 0 3px red, 0 0 10px red, inset 0 0 10px red; border:1px solid red \9; margin:0 \9;}
+		#tools{ float:right; width:180px; font:normal 14px/140% 'SketchFlow Print','Segoe Print','Lucida Handwriting',GeezaPro,AppleGothic,Arial,'Microsoft Yahei';}
+		#tools p{ margin:5px 0;}
+		#tools .description{ margin-bottom:30px;}
+		#gameTime{ color:deeppink;}
+		#gameStart{
+			display: inline-block; margin:10px 0 5px; outline: none; text-align: center; cursor: pointer; text-decoration: none;
+			padding: 8px 40px 9px; font: 18px/1 'Microsoft YaHei'; color: #fef4e9; text-shadow: 0 1px 1px rgba(0,0,0,.3);
+			border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,.2); border: solid 1px #da7c0c;
+			background: #f78d1d;
+			background: -webkit-gradient(linear, left top, left bottom, from(#faa51a), to(#f47a20));
+			background: -moz-linear-gradient(top,  #faa51a,  #f47a20);
+			filter:  progid: DXImageTransform.Microsoft.gradient(startColorstr='#faa51a', endColorstr='#f47a20');
+		}
+		#gameStart:hover{
+			text-decoration: none;
+			background: #f47c20;
+			background: -webkit-gradient(linear, left top, left bottom, from(#f88e11), to(#f06015));
+			background: -moz-linear-gradient(top,  #f88e11,  #f06015);
+			filter:  progid: DXImageTransform.Microsoft.gradient(startColorstr='#f88e11', endColorstr='#f06015');
+		}
+		#gameStart:active {
+			position: relative;
+			top: 1px;
+			color: #fcd3a5;
+			background: -webkit-gradient(linear, left top, left bottom, from(#f47a20), to(#faa51a));
+			background: -moz-linear-gradient(top,  #f47a20,  #faa51a);
+			filter:  progid: DXImageTransform.Microsoft.gradient(startColorstr='#f47a20', endColorstr='#faa51a');
+		}
+	</style>
+</head>
+<body>
+
+<div id="wrap">
+	<div id="tools">
+		<input type="button" id="gameStart" value="开始" hidefocus="hidefocus"  onfocus="this.blur()"/>
+		<p>用时：<span id="gameTime">00:00:00</span></p>
+		<p>作者： <a href="http://jayuh.com" title="点击进入Jayuh的博客" target="_blank">Jayuh</a></p>
+		<p>说明：空格可快速暂停游戏</p>
+		<p>选关：<select id="option">
+				<option value="pvz">植物大战僵尸</option>
+				<option value="zhensan">真三国无双</option>
+				<option value="beauty">美女</option>
+			</select>
+		</p>
+		<p class="description">关卡说明：<span id="description"></span></p>
+		<p><a id="superPassword" href="javascript:void(0);">超级密令</a></p>
+		<p><a id="help" href="javascript:void(0);">求助(仅剩<span>3</span>次)</a></p>
+	</div>
+	<div id="pic" class="clearfix"></div>
+</div>
+
+<script type="text/javascript" src="../js/jquery-1.7.2.js"></script>
+<script type="text/javascript">
+
+	/**
+	 * 配置项
+	 */
+
+	var option = {
+		pvz: {
+			index: 1,			// 复制几份
+			length: 47,			// 图片基数
+			width: '60px',		// 图片宽高
+			imgPath: 'pvz',		// 图片路径
+			imgFormat: 'png',	// 图片格式
+			helpTimes: 3,		// 求助次数
+			description: '经典的植物大战僵尸，共47组图片，简单型！'	// 关卡描述
+		},
+		zhensan: {
+			index: 1,
+			length: 43,
+			width: '64px',
+			imgPath: 'zhensan',
+			imgFormat: 'jpg',
+			helpTimes: 4,
+			description: '真三人物头像，没玩过魔兽的同学，恐怕会感觉辨识度很低，共43组图片，中等难度！'
+		},
+		beauty: {
+			index: 1,
+			length: 100,
+			width: '60px',
+			imgPath: 'beauty',
+			imgFormat: 'jpg',
+			helpTimes: 5,
+			description: '百名美女大考验，超级难！'
+		}
+	};
+
+	var resultOption = option.pvz;
+
+	/**
+	 * 全局变量
+	 */
+	var pairCount = 0,							// 总共配对数
+		hasSelect = false,						// 判断是否是首选元素
+		gameStart = false,						// 是否开始游戏
+		countTime = 0,							// 游戏计时：秒
+		countTimeTimer,							// 时间计时器
+		helpTimes = resultOption.helpTimes;		// 剩余帮助次数
+
+
+	/**
+	 * 洗牌
+	 */
+	function distribution(){
+		var htmlStr = '', arr = [], index = resultOption.index, length = resultOption.length;
+		// 拿到一个数组
+		while(length > 0){
+			arr.push(length);
+			length--;
+		}
+		// 数组复制份数
+		while(index > 0){
+			// 数组乘二
+			[].push.apply(arr, arr);
+			index--;
+		}
+		// 随机打乱数组
+		arr.sort(function(){
+			return Math.random() - 0.5;
+		});
+		// 总共配对数
+		pairCount = arr.length / 2;
+		// 将所有缩略图插入一个字符串
+		for(var i = 0; i < arr.length; i++){
+			htmlStr += '<div id="pair' + i + '" class="item" pair="' + arr[i] + '" style="width:' + resultOption.width + ';height:' + resultOption.width + ';background-image:url(images/' + resultOption.imgPath + '/' + arr[i] + '.' + resultOption.imgFormat + ');"><div class="shade"></div></div>';
+		}
+		// 将所有元素插入HTML
+		$('#pic').html(htmlStr);
+		helpTimes = resultOption.helpTimes;
+		$('#help').find('span').html(helpTimes);
+		$('#description').html(resultOption.description);
+	}
+	distribution();
+
+	/**
+	 * 元素添加点击事件
+	 */
+	$('.item').bind('click',elemClick);
+	function elemClick(){
+		var $newEle = $(this),
+			$oldEle = $('.select');
+
+		if($newEle.attr('pairoff') == 'pairoff'){
+			// 判断此元素是否已配对
+			return false;
+		}
+
+		if(gameStart == false){
+			$('#gameStart').click();
+		}
+
+		if(hasSelect == true){
+			// 选中第二个元素
+			if($newEle.attr('id') == $oldEle.attr('id')){
+				// 两次选中了同一个元素
+			}else if($oldEle.attr('pair') == $newEle.attr('pair')){
+				// 配对成功
+				var $bothEle = [$oldEle,$newEle];
+				// 动画效果
+				$newEle.addClass('select').find('.shade').addClass('shade_show');
+				setTimeout(function(){
+					var outsideTimer = arguments.callee;
+					$.each($bothEle,function(){
+						$(this).removeClass('select');
+					});
+					outsideTimer.times++;
+					if(outsideTimer.times == 1){
+						$.each($bothEle,function(){
+							$(this).css('background','#E1E1E1');
+						});
+						// 剩余配对数
+						pairCount--;
+						if(pairCount == 0){
+							gameStart = false;
+							clearInterval(countTimeTimer);
+							$('#gameStart').val('开始');
+							alert('过关！总共用时：' + $('#gameTime').html());
+						}
+						return false;
+					}
+					setTimeout(function(){
+						outsideTimer.times = 0;
+						$.each($bothEle,function(){
+							$(this).addClass('select');
+						});
+						setTimeout(outsideTimer, 200);
+					}, 200);
+				},200);
+				// 配对成功的元素添加标识
+				$.each($bothEle,function(){
+					$(this).attr('pairoff', 'pairoff').html('');
+				});
+				hasSelect = false;
+			}else{
+				// 配对不成功
+				$oldEle.removeClass('select').find('.shade').removeClass('shade_show');
+				$newEle.addClass('select').find('.shade').addClass('shade_show');
+				hasSelect = true;
+			}
+		}else{
+			// 首次选中
+			$newEle.addClass('select').find('.shade').addClass('shade_show');
+			hasSelect = true;
+		}
+	}
+
+
+	/**
+	 * 工具类
+	 */
+	$('#gameStart').bind('click',function(){
+		var $this = $(this);
+		if($this.val() == '开始'){
+			// 暂停游戏
+			gameStart = true;
+			countTimeTimer = setInterval(gameTimeStart, 1000);
+			$this.val('暂停');
+		}else if($this.val() == '暂停'){
+			// 游戏开始
+			gameStart = false;
+			clearInterval(countTimeTimer);
+			$this.val('开始');
+		}
+	});
+
+	// 全局键盘事件
+	$(document).bind('keydown',function(event){
+		switch(event.keyCode){
+			// 空格 = 开始/暂停
+			case 32 : $('#gameStart').click();
+		}
+	});
+
+	// 游戏时间计时
+	function gameTimeStart(){
+		countTime++;
+		var second = getDoubleNum(countTime % 60),
+				minute = getDoubleNum(Math.floor(countTime/60) % 60),
+				hour = getDoubleNum(Math.floor(countTime/3600) % 60);
+		$('#gameTime').html(hour + ':' + minute + ':' + second);
+	}
+
+	// 个位数补齐十位数
+	function getDoubleNum(num){
+		return num < 10 ? '0' + num : num;
+	}
+
+	// 选关下拉菜单
+	$('#option').bind('change',function(){
+		// 获取下拉菜单的值
+		var value = $(this).select().val();
+		// 赋值给选项
+		resultOption = option[value];
+		// 清空页面
+		$('#pic').html('');
+		// 重新洗牌
+		distribution();
+		// 重置开始按钮
+		if($('#gameStart').val() == '暂停'){
+			$('#gameStart').click();
+		}
+		// 绑定元素的点击事件
+		$('.item').bind('click',elemClick);
+		// 重置且暂停时间
+		countTime = 0;
+		clearInterval(countTimeTimer);
+		$('#gameTime').html('00:00:00');
+		// 初始化变量
+		helpTimes = resultOption.helpTimes;
+	});
+
+	// 超级密令
+	$('#superPassword').bind('click',function(){
+		var name = prompt('请输入超级密令：','');
+		 if(name == 'jayuh'){
+			 $('.item').html('');
+		 }
+	});
+
+	// 求助
+	$('#help').bind('click',function(){
+		if(helpTimes == 0){
+			alert('求助已用完，剩下的全靠自己了！');
+			return false;
+		}
+		helpTimes--;
+		$(this).find('span').html(helpTimes);
+		setTimeout(function(){
+			var outsideTimer = arguments.callee;
+			$('.shade').addClass('shade_show');
+			setTimeout(function(){
+				$('.shade').removeClass('shade_show');
+			}, 3000);
+		},0);
+	});
+
+</script>
+</body>
+</html>
