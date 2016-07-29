@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>扫雷</title>
+	<link rel="stylesheet" href="../css/base.css">
+	<style>
+		.wrap{
+			margin: 10px;
+		}
+		#canvas table {
+			border-collapse:collapse;
+			margin: 10px 0;
+		}
+		#canvas td {
+			position: relative;
+			width: 30px;
+			height: 30px;
+			border: 1px solid #313131;
+			text-align: center;
+			color: #666;
+		}
+		#canvas td:after {
+			content:" ";
+		    display: block;
+    		position: absolute;
+    		top: 0;
+    		left: 0;
+			width: 100%;
+			height: 100%;
+		}
+		#canvas td.shade:after {
+			background-color: #CCC;
+		}
+		#canvas td.flag:after {
+			background: #CCC url(flag.png) no-repeat center center;
+			background-size: 60%;
+		}
+		#tips{
+			width: 290px;
+			margin: 10px 0;
+			border-radius: 3px;
+			padding: 10px;
+		}
+		#tips.error{
+			color: #fff;
+		    background-color: #d9534f;
+		    border-color: #d43f3a;
+		}
+		#tips.success{
+		    color: #fff;
+		    background-color: #5cb85c;
+		    border-color: #4cae4c;
+		}
+		#tips.info{
+		    color: #fff;
+		    background-color: #5cb85c;
+		    border-color: #4cae4c;
+		}
+		#tips.warning{
+		    color: #fff;
+		    background-color: #f0ad4e;
+		    border-color: #eea236;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="wrap">
+		<label for="row">行</label>
+		<input type="number" id="row" value="10">
+		<label for="column">列</label>
+		<input type="number" id="column" value="10">
+		<label for="landmineLength">雷数</label>
+		<input type="number" id="landmineLength" value="10">
+		<input type="button" id="start" value="开始">
+
+		<div id="canvas"></div>
+		<div id="tips"></div>
+	</div>
+	
+	<script src="../js/jquery-1.7.2.js"></script>
+	<script>
+
+	var landmine = {
+
+		// 数据
+		data: {
+			// 行
+			row: 10,
+			// 列
+			column: 10,
+			// 方格总数
+			total: 100,
+			// 地雷总数
+			landmineLength: 10,
+			// 画布id
+			canvasId: 'canvas',
+			// 提示id
+			tipsId: 'tips'
+		},
+
+		// 初始化数据
+		initData: function(options) {
+			if (options) {
+				this.data.row = parseInt(options.row) || this.data.row;
+				this.data.column = parseInt(options.column) || this.data.column;
+				this.data.total = this.data.row * this.data.column;
+				this.data.landmineLength = parseInt(options.landmineLength) || this.data.landmineLength;
+				this.data.canvasId = options.canvasId || this.data.canvasId;
+				this.data.tipsId = options.tipsId || this.data.tipsId;
+			}
+		},
+
+		// 初始化
+		init: function(options) {
+			// 初始化数据
+			this.initData(options);
+			// 销毁画布
+			this.destroy();
+			// 初始化数组
+			this.initArr();
+			// 随机地雷到数组中
+			this.initLandmine();
+			// 显示地雷周围方格的数字
+			this.initOtherCell();
+			// 绑定事件
+			this.bindEvent();
+		},
+
+		// 销毁画布
+		destroy: function() {
+			$('#' + this.data.canvasId).html('');
+			$('#' + this.data.tipsId).html('').removeClass();
+			this.time = null;
+		},
+
+		// 初始化数组
+		initArr: function() {
+			var total = this.data.total;
+			this.arr = new Array();
+			while (total) {
+				this.arr.push('');
+				total--;
+			}
+		},
+
+		// 初始化地雷到数组中
+		initLandmine: function() {
+			var landmineLength = this.data.landmineLength;
+			while (landmineLength) {
+				var randomNum = this.randomNum(this.arr);
+				this.arr[randomNum] = '雷';
+				landmineLength--;
+			}
+		},
+
+		// 显示地雷周围方格的数字
+		initOtherCell: function() {
+			var total = this.data.total, i = 0;
+			for (i; i < total; i++) {
+				var current = this.arr[i];
+				if (current !== '雷') {
+					var num = this.calcSingleNum(i);
+					this.arr[i] = num;
+				}
+			}
+			this.render();
+		},
+
+		// 绑定事件
+		bindEvent: function() {
+			var self = this;
+			$('#' + self.data.canvasId).delegate('td', 'mousedown', function(e) {
+				var $this = $(this);
+				if (!self.time) {
+					self.time = +new Date();
+				}
+				if ($this.hasClass('num')) return false;
+				if (e.which === 1) {
+					$this.removeClass().addClass('num');
+					if ($this.html() === '雷') {
+						self.print('error', 'Sorry, Game over！');
+					}
+				} else if (e.which === 3) {
+					$this.toggleClass('flag');
+					var $flags = $('#' + self.data.canvasId + ' td.flag'), flagsLen = $flags.length;
+					if ( flagsLen === self.data.landmineLength ) {
+						$flags.each(function(i, n) {
+							if ($(this).html() !== '雷') {
+								return false;
+							}
+							if ($(this).html() === '雷' && ++i === self.data.landmineLength) {
+								var time = self.getTime();
+								self.print('success', '通关！用时' + time );
+							}
+						});
+					} else if ( flagsLen > self.data.landmineLength ) {
+						self.print('warning', '只有' + self.data.landmineLength + '个雷，但您已经插了' + flagsLen + '个小红旗，请注意查误。');
+					}
+				}
+			});
+			$('#' + self.data.canvasId).bind("contextmenu",function(e){
+		       return false;
+		   	});
+		},
+
+		// 计算单个方格位置的数字
+		calcSingleNum: function(num) {
+			// 数组坐标顺序：上⬆️ 右上↗️ 右➡️ 右下↘️ 下⬇️ 左下↙️ 左⬅️ 左上↖️️️
+			var row = this.data.row, column = this.data.column;
+				friends = [num-column, num-(column-1), num+1, num+(column+1), num+column, num+(column-1), num-1, num-(column+1)],
+				result = 0;
+			if( (num+1)%row === 0 ) {
+				friends.splice(1, 3, -1, -1, -1);
+			} else if ( num%row === 0 ) {
+				friends.splice(5, 3, -1, -1, -1);
+			}
+			for (var i in friends) {
+				if (this.arr[friends[i]] === '雷') {
+					result++;
+				}
+			}
+			return result;
+		},
+
+		// 随机一个地雷的位置
+		randomNum: function(arr) {
+			var tempNum = Math.floor(Math.random() * landmine.data.total);
+			if (arr[tempNum] === '雷') {
+				return arguments.callee(arr);
+			} else {
+				return tempNum;
+			}
+		},
+
+		// 将数据渲染至页面
+		render: function() {
+			var arr = this.arr, tableHtml = '<table>', i, j;
+			for (i = 0; i < this.data.row; i++) {
+				var tr = '<tr>';
+				for (j = 0; j < this.data.column; j++) {
+					tr += '<td></td>';
+				}
+				tr += '</tr>';
+				tableHtml += tr;
+			}
+			tableHtml += '</table>';
+			$('#' + this.data.canvasId).html(tableHtml);
+			$('#' + this.data.canvasId + ' td').each(function(i, n) {
+				$(n).html(arr[i])
+					// .addClass('shade');
+			});
+		},
+
+		// 获取用时
+		getTime: function() {
+			var second = Math.round((+new Date() - this.time) / 1000), text;
+			if (second < 60) {
+				text = second + '秒';
+			} else {
+				text = Math.ceil(second/60) + '分' + (second%60 === 0 ? '' : second%60 + '秒');
+			}
+			return text;
+		},
+
+		// 输出文字提示
+		print: function(type, str) {
+			var $tips = $('#' + this.data.tipsId);
+			switch (type) {
+				case 'error':
+					$tips.addClass('error').html(str);
+					$('#' + this.data.canvasId).undelegate('mousedown');
+					break;
+				case 'success':
+					$tips.addClass('success').html(str);
+					$('#' + this.data.canvasId).undelegate('mousedown');
+					break;
+				case 'warning':
+					$tips.addClass('warning').html(str);
+					break;
+				default:
+					$tips.addClass('info').html(str);
+			}
+		}
+	};
+
+	landmine.init();
+
+	$('#start').on('click', function() {
+		landmine.init({
+			row: $('#row').val(),
+			column: $('#column').val(),
+			landmineLength: $('#landmineLength').val(),
+			canvasId: 'canvas',
+			tipsId: 'tips'
+		});
+	});
+		
+	</script>
+</body>
+</html>
